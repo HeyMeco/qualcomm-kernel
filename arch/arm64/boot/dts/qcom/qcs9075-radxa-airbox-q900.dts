@@ -129,6 +129,15 @@
 		};
 	};
 
+	fan0: gpio-fan {
+		compatible = "gpio-fan";
+		gpios = <&pmm8654au_1_gpios 12 GPIO_ACTIVE_HIGH>;
+		gpio-fan,speed-map = <0 0>, <5000 1>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&fan_en_state>;
+		#cooling-cells = <2>;
+	};
+
 	dp0-connector {
 		compatible = "dp-connector";
 		label = "eDP0";
@@ -821,6 +830,13 @@
 		output-high;
 		bias-pull-up;
 	};
+
+	fan_en_state: fan-en-state {
+		pins = "gpio12";
+		function = "normal";
+		output-low;
+		bias-pull-down;
+	};
 };
 
 &pmm8654au_2_gpios {
@@ -959,5 +975,29 @@
 		function = "gpio";
 		output-high;
 		bias-pull-up;
+	};
+};
+
+/ {
+	thermal-zones {
+		cpu-0-0-0-thermal {
+			polling-delay-passive = <1000>;
+			polling-delay = <5000>;
+
+			trips {
+				fan_on: fan-on {
+					temperature = <65000>;
+					hysteresis = <5000>;
+					type = "active";
+				};
+			};
+
+			cooling-maps {
+				map-fan {
+					trip = <&fan_on>;
+					cooling-device = <&fan0 1 1>;
+				};
+			};
+		};
 	};
 };
