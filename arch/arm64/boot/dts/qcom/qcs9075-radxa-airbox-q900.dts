@@ -999,7 +999,7 @@
 
 			trips {
 				fan_on: fan-on {
-					temperature = <65000>;
+					temperature = <40000>;
 					hysteresis = <5000>;
 					type = "active";
 				};
